@@ -34,57 +34,6 @@ The following diagram illustrates the internal structure of the weather module:
 ```mermaid
 classDiagram
 
-%% ========= APP =========
-
-class Main
-class WeatherController
-
-class WeatherFeeder {
-  <<interface>>
-  +fetch()
-}
-
-class OpenMeteoFeeder
-
-class WeatherEventPublisher {
-  <<interface>>
-}
-
-class WeatherPublisher
-
-
-%% ========= INFRASTRUCTURE =========
-
-class OpenMeteoUrlBuilder
-class OpenMeteoResponseParser
-class WeatherMapper
-
-class WeatherRepository {
-  <<interface>>
-}
-
-class SQLiteWeatherRepository
-class WeatherDatabase
-
-
-%% ========= MODEL =========
-
-class Beach {
-  <<record>>
-}
-
-class WeatherRecord {
-  <<record>>
-}
-## Class Diagram: weather-module
-
-The following diagram illustrates the internal structure of the weather module:
-
-```mermaid
-classDiagram
-
-%% ================= APP =================
-
 class Main {
     +main(String[] args)
 }
@@ -97,7 +46,7 @@ class WeatherController {
 
 class WeatherFeeder {
     <<interface>>
-    +fetch() List~WeatherRecord~
+    +fetch()
 }
 
 class OpenMeteoFeeder {
@@ -105,99 +54,90 @@ class OpenMeteoFeeder {
     -OpenMeteoUrlBuilder urlBuilder
     -OpenMeteoResponseParser parser
     -WeatherMapper mapper
-    +fetch() List~WeatherRecord~
+    +fetch()
 }
 
 class BeachProvider {
-    +getBeaches() List~Beach~
+    +getBeaches()
 }
 
 class WeatherEventPublisher {
     <<interface>>
-    +publish(WeatherRecord record)
+    +publish()
 }
 
 class WeatherPublisher {
     -WeatherEventBuilder builder
-    +publish(WeatherRecord record)
+    +publish()
 }
 
 class WeatherEventBuilder {
-    +buildEvent(WeatherRecord record) String
+    +buildEvent()
 }
 
-
-%% ================= INFRASTRUCTURE =================
-
 class OpenMeteoUrlBuilder {
-    +buildUrl(Beach beach) String
+    +buildUrl()
 }
 
 class OpenMeteoResponseParser {
-    +parse(String json) Object
+    +parse()
 }
 
 class WeatherMapper {
-    +toWeatherRecord(Object data, Beach beach) WeatherRecord
+    +toWeatherRecord()
 }
 
 class WeatherRepository {
     <<interface>>
-    +saveAll(List~WeatherRecord~ records)
+    +saveAll()
 }
 
 class SQLiteWeatherRepository {
     -WeatherDatabase database
-    +saveAll(List~WeatherRecord~ records)
+    +saveAll()
 }
 
 class WeatherDatabase {
     +initialize()
-    +connect() Connection
+    +connect()
 }
-
-
-%% ================= MODEL =================
 
 class Beach {
     <<record>>
-    +String name
-    +double latitude
-    +double longitude
+    +name
+    +latitude
+    +longitude
 }
 
 class WeatherRecord {
     <<record>>
-    +String beachName
-    +String forecastTime
-    +double temperature
-    +double windSpeed
-    +String capturedAt
+    +beachName
+    +forecastTime
+    +temperature
+    +windSpeed
+    +capturedAt
 }
 
+Main --> WeatherController
 
-%% ================= RELATIONS =================
-
-Main --> WeatherController : starts
-
-WeatherController --> WeatherFeeder : uses
-WeatherController --> WeatherEventPublisher : publishes through
+WeatherController --> WeatherFeeder
+WeatherController --> WeatherEventPublisher
 
 OpenMeteoFeeder ..|> WeatherFeeder
 WeatherPublisher ..|> WeatherEventPublisher
 SQLiteWeatherRepository ..|> WeatherRepository
 
-OpenMeteoFeeder --> BeachProvider : uses
-OpenMeteoFeeder --> OpenMeteoUrlBuilder : builds URLs
-OpenMeteoFeeder --> OpenMeteoResponseParser : parses JSON
-OpenMeteoFeeder --> WeatherMapper : maps data
+OpenMeteoFeeder --> BeachProvider
+OpenMeteoFeeder --> OpenMeteoUrlBuilder
+OpenMeteoFeeder --> OpenMeteoResponseParser
+OpenMeteoFeeder --> WeatherMapper
 
-OpenMeteoFeeder --> Beach : reads
-WeatherMapper --> WeatherRecord : creates
+OpenMeteoFeeder --> Beach
+WeatherMapper --> WeatherRecord
 
-SQLiteWeatherRepository --> WeatherDatabase : uses
-SQLiteWeatherRepository --> WeatherRecord : stores
+SQLiteWeatherRepository --> WeatherDatabase
+SQLiteWeatherRepository --> WeatherRecord
 
-WeatherPublisher --> WeatherEventBuilder : uses
-WeatherEventBuilder --> WeatherRecord : creates event from
+WeatherPublisher --> WeatherEventBuilder
+WeatherEventBuilder --> WeatherRecord
 ```
