@@ -26,3 +26,78 @@ python main.py
 Search tasks
 Priorities
 Tests
+
+## Class Diagram: weather-module
+
+The following diagram illustrates the internal structure of the weather module:
+
+```mermaid
+classDiagram
+
+%% ========= APP =========
+
+class Main
+class WeatherController
+
+class WeatherFeeder {
+  <<interface>>
+  +fetch()
+}
+
+class OpenMeteoFeeder
+
+class WeatherEventPublisher {
+  <<interface>>
+}
+
+class WeatherPublisher
+
+
+%% ========= INFRASTRUCTURE =========
+
+class OpenMeteoUrlBuilder
+class OpenMeteoResponseParser
+class WeatherMapper
+
+class WeatherRepository {
+  <<interface>>
+}
+
+class SQLiteWeatherRepository
+class WeatherDatabase
+
+
+%% ========= MODEL =========
+
+class Beach {
+  <<record>>
+}
+
+class WeatherRecord {
+  <<record>>
+}
+
+
+%% ========= RELATIONS =========
+
+Main --> WeatherController
+
+WeatherController --> WeatherFeeder
+WeatherController --> WeatherEventPublisher
+
+OpenMeteoFeeder ..|> WeatherFeeder
+WeatherPublisher ..|> WeatherEventPublisher
+SQLiteWeatherRepository ..|> WeatherRepository
+
+OpenMeteoFeeder --> OpenMeteoUrlBuilder
+OpenMeteoFeeder --> OpenMeteoResponseParser
+OpenMeteoFeeder --> WeatherMapper
+
+OpenMeteoFeeder --> Beach
+WeatherMapper --> WeatherRecord
+
+SQLiteWeatherRepository --> WeatherDatabase
+SQLiteWeatherRepository --> WeatherRecord
+
+WeatherPublisher --> WeatherRecord
+```
