@@ -30,8 +30,6 @@ Tests
 ## System Architecture
 
 
-```markdown
-## System Architecture
 
 ```mermaid
 flowchart LR
