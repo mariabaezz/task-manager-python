@@ -29,6 +29,10 @@ Tests
 
 ## System Architecture
 
+
+```markdown
+## System Architecture
+
 ```mermaid
 flowchart LR
 
@@ -36,20 +40,16 @@ A[weather-module]
 B[beachinfo-module]
 
 A -->|Weather Events| MQ[ActiveMQ]
-B -->|Beach Events| MQ
+B -->|BeachInfo Events| MQ
 
 MQ --> ES[eventstore-builder]
-MQ --> BU[business-unit]
-
 ES --> HIST[(Event Store)]
 
-HIST -->|Historical Events| BU
+MQ --> BU[business-unit]
 
-BU --> UPD[DatamartUpdater]
-UPD --> DM[(Datamart)]
+BU -->|updates beach state| DM[(Datamart)]
+DM -->|provides BeachState| BU
 
-DM -->|BeachState| BU
-BU -->|BeachState| REC[Recommendation Service]
-
+BU -->|sends BeachState| REC[Recommendation Service]
 REC --> OUT[Recommendations]
 ```
