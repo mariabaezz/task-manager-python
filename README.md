@@ -27,27 +27,3 @@ Search tasks
 Priorities
 Tests
 
-## System Architecture
-
-
-
-```mermaid
-flowchart LR
-
-A[weather-module]
-B[beachinfo-module]
-
-A -->|Weather Events| MQ[ActiveMQ]
-B -->|BeachInfo Events| MQ
-
-MQ --> ES[eventstore-builder]
-ES --> HIST[(Event Store)]
-
-MQ --> BU[business-unit]
-
-BU -->|updates beach state| DM[(Datamart)]
-DM -->|provides BeachState| BU
-
-BU -->|sends BeachState| REC[Recommendation Service]
-REC --> OUT[Recommendations]
-```
